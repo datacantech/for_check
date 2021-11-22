@@ -1,0 +1,32 @@
+version: "3.7"
+
+services:
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+    environment:
+      POSTGRES_USER: davical
+      POSTGRES_PASSWORD: davical
+
+  app:
+    image:davical:nginx
+    volumes:
+      - ./:/var/www/html/
+    restart: always
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./:/var/www/,
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - app
+volumes:
+  postgres_data:
